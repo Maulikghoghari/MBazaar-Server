@@ -51,9 +51,16 @@ const uploadFields = upload.fields([
 
 
 
+// Root Health Check Route
+router.get('/', (req, res) => {
+  res.json({
+    status: 'success',
+    message: 'M-Bazaar Backend API Server is active and operational!',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // signup login
-
-
 router.post("/signup", usercontroller.signup);
 router.post("/login", usercontroller.login);
 
@@ -88,18 +95,18 @@ router.put('/admin/product-update', upload.fields([
 
 router.delete("/admin/product-delete",admincontroller.deleteproduct);
 
-router.get("/admin/product-findall",admincontroller.findproduct);
+router.get("/admin/product-findall", admincontroller.findproduct);
+router.get("/product-findall", admincontroller.findproduct);
 
-router.get("/admin/product-findone",admincontroller.findoneproduct);
-
+router.get("/admin/product-findone", admincontroller.findoneproduct);
+router.get("/product-findone", admincontroller.findoneproduct);
 
 // find product by id 
+router.get("/product/:id", findProductDetails.getProductById);
 
-router.get("/product/:id",findProductDetails.getProductById);
-
-// finsd user 
-
-router.get("/admin/user-findall",uesrfindcontroller.getuser);
+// find users
+router.get("/admin/user-findall", uesrfindcontroller.getuser);
+router.get("/user-findall", uesrfindcontroller.getuser);
 
 // productreview
 
