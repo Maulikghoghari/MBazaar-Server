@@ -19,17 +19,28 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }));
 
-// MongoDB Connection with fallback
+// MongoDB Connection with caching for Serverless
 const MONGO_URI = process.env.MONGO_URL;
 
-if (!MONGO_URI) {
-  console.error('❌ MONGO_URL is not defined! Set it in Vercel Environment Variables.');
-} else {
-  mongoose.connect(MONGO_URI)
-    .then(() => console.log('MongoDB Connected successfully!'))
-    .catch((err) => {
-      console.error('MongoDB connection error:', err.message);
+let cachedConnection = null;
+async function connectDB() {
+  if (mongoose.connection.readyState >= 1) {
+    return mongoose.connection;
+  }
+  if (!MONGO_URI) {
+    throw new Error("MONGO_URL is not defined! Set it in Vercel Environment Variables.");
+  }
+  if (!cachedConnection) {
+    console.log("Connecting to MongoDB...");
+    cachedConnection = mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 10000,
+    }).catch(err => {
+      cachedConnection = null;
+      throw err;
     });
+  }
+  return cachedConnection;
 }
 
 app.use(logger('dev'));
@@ -38,6 +49,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
+// Middleware to ensure DB connection before handling API routes
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database connection failed:', err.message);
+    res.status(500).json({
+      status: 'error',
+      message: 'Database connection failed: ' + err.message + ' (Make sure your MongoDB Atlas Network Access allows 0.0.0.0/0)'
+    });
+  }
+});
 
 // API Routes
 app.use('/', indexRouter);
