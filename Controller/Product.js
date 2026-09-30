@@ -15,7 +15,7 @@ exports.addproduct = async function (req, res, next) {
             data: data
         })
     } catch (error) {
-        res.status(404).json({
+        res.status(500).json({
             status: "fail",
             message: error.message
         })
@@ -37,7 +37,7 @@ exports.deleteproduct = async function (req, res, next) {
         })
     }
     catch (error) {
-        res.status(404).json({
+        res.status(500).json({
             status: "fail",
             message: error.message
         })
@@ -101,7 +101,7 @@ exports.findproduct = async function (req, res, nexr) {
             data: data
         })
     } catch (error) {
-        res.status(404).json({
+        res.status(500).json({
             status: "fail",
             message: error.message
         })
@@ -121,7 +121,7 @@ exports.findoneproduct = async function (req, res, next) {
             data: data
         })
     } catch (error) {
-        res.status(404).json({
+        res.status(500).json({
             status: "fail",
             message: error.message
         })

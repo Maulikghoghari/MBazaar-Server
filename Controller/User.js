@@ -76,8 +76,8 @@ exports.login = async function (req, res, next) {
         })
         console.log(user);
     } catch (error) {
-        res.status(404).json({
-            ststus: "fail",
+        res.status(500).json({
+            status: "fail",
             message: error.message
         })
     }
