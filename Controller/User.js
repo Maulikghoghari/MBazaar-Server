@@ -1,18 +1,18 @@
 var express = require('express');
 var jwt = require('jsonwebtoken');
-const SIGNUP = require('../model/Signup');
+const SIGNUP = require('../Model/Signup');
 const bcrypt = require('bcrypt');
 
-exports.secure = async function (req,res,next) {
+exports.secure = async function (req, res, next) {
     try {
         let token = req.headers.token;
-        if(!token){
+        if (!token) {
             throw new Error("token not found");
         }
         var decoded = jwt.verify(token, 'maulik');
         let checkuser = await SIGNUP.findById(decoded.id);
 
-        if(!checkuser){
+        if (!checkuser) {
             throw new Error("User not found");
         }
         req.userId = decoded.id;
@@ -72,7 +72,7 @@ exports.login = async function (req, res, next) {
             message: "login succesfully",
             data: user,
             token,
-             username: user.username 
+            username: user.username
         })
         console.log(user);
     } catch (error) {

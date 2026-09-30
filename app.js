@@ -22,11 +22,15 @@ app.use(cors({
 // MongoDB Connection with fallback
 const MONGO_URI = process.env.MONGO_URL;
 
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB Connected successfully!'))
-  .catch((err) => {
-    console.error('MongoDB connection error:', err.message);
-  });
+if (!MONGO_URI) {
+  console.error('❌ MONGO_URL is not defined! Set it in Vercel Environment Variables.');
+} else {
+  mongoose.connect(MONGO_URI)
+    .then(() => console.log('MongoDB Connected successfully!'))
+    .catch((err) => {
+      console.error('MongoDB connection error:', err.message);
+    });
+}
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -40,12 +44,12 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404, 'Endpoint Not Found'));
 });
 
 // JSON Error Handler (Serverless compatible)
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   res.status(err.status || 500).json({
     status: 'error',
     message: err.message || 'Internal Server Error'

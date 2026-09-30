@@ -9,7 +9,7 @@ const ProductSchema = new Schema({
     hot: { type: Boolean, default: false },
     isnew: { type: Boolean, default: false },
     instock: { type: Boolean, default: true },
-    newgoods: {type: Boolean, default: true },
+    newgoods: { type: Boolean, default: true },
     bestoffer: { type: Boolean, default: false },
     discount: { type: String, default: false },
     mainImage: String,
