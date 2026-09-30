@@ -14,7 +14,7 @@ var app = express();
 
 // Enable CORS for all origins and headers
 app.use(cors({
-  origin: '*',
+  origin: 'https://m-bazaar-client.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }));
